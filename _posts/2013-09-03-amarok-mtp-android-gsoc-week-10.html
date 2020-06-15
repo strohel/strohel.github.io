@@ -1,0 +1,16 @@
+---
+layout: post
+title: 'Amarok MTP (Android) GSoC: week 10'
+date: '2013-09-03T02:15:00.000+02:00'
+author: strohel
+tags:
+- amarok
+- gsoc
+- kde
+modified_time: '2013-09-03T02:15:51.347+02:00'
+thumbnail: http://2.bp.blogspot.com/-nfpP2WEmJck/UiUm5UZez1I/AAAAAAAAAoo/zdE-N-u2AZg/s72-c/GSoC2013-MTP-w10-copying-from-MTP.png
+blogger_id: tag:blogger.com,1999:blog-4406477566892767740.post-3003883288303668748
+blogger_orig_url: https://strohel.blogspot.com/2013/09/amarok-mtp-android-gsoc-week-10.html
+---
+
+<div style="text-align: justify;"><table cellpadding="0" cellspacing="0" class="tr-caption-container" style="float: right; margin-left: 1em; text-align: right;"><tbody><tr><td style="text-align: center;"><a href="http://2.bp.blogspot.com/-nfpP2WEmJck/UiUm5UZez1I/AAAAAAAAAoo/zdE-N-u2AZg/s1600/GSoC2013-MTP-w10-copying-from-MTP.png" imageanchor="1" style="clear: right; margin-bottom: 1em; margin-left: auto; margin-right: auto;"><img border="0" height="640" src="http://2.bp.blogspot.com/-nfpP2WEmJck/UiUm5UZez1I/AAAAAAAAAoo/zdE-N-u2AZg/s640/GSoC2013-MTP-w10-copying-from-MTP.png" width="340" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Tracks being copied from Android to iPod</td></tr></tbody></table>Hi, this is my (a bit late <i>*cough*</i>) report from week 10 describing my work on my Google Summer of Code project to <a href="https://google-melange.appspot.com/gsoc/project/google/gsoc2013/strohel/32001">rewrite MTP (Android) support in Amarok from scratch</a>. The report from week 11 will follow shortly, but I'll keep them split. In week 10 I've mainly worked on copy-ability of tracks out of the MTP device.<br /><br /></div><div style="text-align: justify;"><b>What I've done this week:</b></div><ul><li style="text-align: justify;">Reworked how MTP devices are initialized. The device is no longer shown in the Collection Browser with 0 tracks while it is being initialized, an (abort-able) progress bar is shown instead. This is also a pre-requisite of the point below...</li><li style="text-align: justify;">Implemented restoring of MTP tracks from their uid. This means that if you quit Amarok with some MTP tracks in you playlist, they turn from grayed-out to playable once you plug in your device on next Amarok run. It also means that Saved Playlists (in Amarok db) with MTP tracks now work.</li><li style="text-align: justify;">Implemented copying of tracks from the MTP device to other Amarok collections (i.e. the first half of <i>MtpCollectionLocation</i>), yay! It works quite well here, although I need to add some progress bars.</li></ul><b>What's next:</b><br /><ul><li>Copying tracks <b>to</b> the device, also removing tracks from the device (easy).</li><li>Config dialog.</li></ul>You can view and test my code by checking out <a href="http://quickgit.kde.org/?p=clones%2Famarok%2Flaitl%2Famarok.git&amp;a=shortlog&amp;h=gsoc">gsoc branch of my personal Amarok clone repository</a>.
