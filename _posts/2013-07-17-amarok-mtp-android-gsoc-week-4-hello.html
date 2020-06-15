@@ -1,0 +1,31 @@
+---
+layout: post
+title: 'Amarok MTP (Android) GSoC: week 4; hello from Bilbao!'
+date: '2013-07-17T01:11:00.001+02:00'
+author: strohel
+tags:
+- amarok
+- gsoc
+- kde
+modified_time: '2013-07-17T01:15:28.464+02:00'
+thumbnail: http://3.bp.blogspot.com/-q-9vybUvq_M/UeVhUzWTJBI/AAAAAAAAPQQ/uiiDaCst61w/s72-w1006-c-h566-no/IMG_7187_v1.JPG
+blogger_id: tag:blogger.com,1999:blog-4406477566892767740.post-894657724279014102
+blogger_orig_url: https://strohel.blogspot.com/2013/07/amarok-mtp-android-gsoc-week-4-hello.html
+---
+
+<div style="text-align: justify;">Kaixo, this is my fourth weekly report covering my Google Summer of Code project to <a href="https://google-melange.appspot.com/gsoc/project/google/gsoc2013/strohel/32001">rewrite MTP (Android) support in Amarok from scratch</a>. Code-wise, I have done only a couple of small commits the last week, but this is fine because I've already done the work scheduled for week 4 during week 3. :-)<br />
+<br />
+
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-q-9vybUvq_M/UeVhUzWTJBI/AAAAAAAAPQQ/uiiDaCst61w/w1006-h566-no/IMG_7187_v1.JPG" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="360" src="/images/2013-07-17-amarok-mtp-android-gsoc-week-4-hello-IMG_7187_v1.JPG" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Photo from the GSoC, GCI, SOK &amp; OPfW students &amp; mentors BoF (which actually well exceeded my expectations). Can you spot me? :-)</td></tr></tbody></table><br />
+I think you've already guessed why I've done a bit less than usual and published the weekly report late: I'm enjoying the <a href="http://dot.kde.org/2013/07/15/akademy-2013-day-two">great atmosphere of Akademy 2013 here in Bilbao, Spain</a>.<br />
+<br />
+
+The event rocks so hard (with all the talks, BoFs, chats, parties, concerts, trips and hacking going on) that it is impossible to describe in a blog post. More importantly for my GSoC project, I've met up with Philipp Schmidt, the kio-mtp author (<a href="http://www.afiestas.org/workspaces-gain-mtp-support/">Àlex Fiestas wants to tell you he did just the screencast</a>), who knows all the quirks of using MTP devices in KDE and is happy to share them. We've also <a href="http://sourceforge.net/mailarchive/forum.php?thread_name=1476380.CIxQ4Ojvuf%40edgy&amp;forum_name=libmtp-discuss">sat down and tweaked</a> the <a href="http://sourceforge.net/p/libmtp/wiki/MTP%20Daemon/">proposed MTP Daemon D-Bus interface</a>, with even more daring suggestions from me being in preparation.<br />
+<br />
+
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://3.bp.blogspot.com/-XskOecO7fSg/UeXGQOKc2RI/AAAAAAAAAaI/tgCgUO5hlQE/s1600/20130714_211015.jpg" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="480" src="/images/2013-07-17-amarok-mtp-android-gsoc-week-4-hello-20130714_211015.jpg" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">Sunset over ocean near Bilbao taken during coast walk. Thanks go to Dani for organizing it!</td></tr></tbody></table><br />
+</div><div style="text-align: justify;"><b>What I've done last week:</b></div><ul><li style="text-align: justify;">Improved Solid &lt;-&gt; libmtp device matching by shamelessly copying a bit of Philipp's kio-mtp code. (okay, he actually pro-actively showed me the code, so it was not <i>that</i> shameless)</li><li style="text-align: justify;">Removed extra device check that actually prevented Amarok from detecting a Sansa Clip device that Matija generously lent me to test it. Thanks, Matija! [note to self: need to discuss this with Phillip]</li><li style="text-align: justify;">Had a serious look at the proposed MTP Daemon interface together with Philipp, sent out first 2 patches for it for review.</li></ul><b>Problems I've faced:</b><br />
+<ul><li style="text-align: justify;">Partying too hard, getting to bed past 4 AM, oversleeping and missing the morning BoFs.</li></ul><b>What's next:</b><br />
+<ul><li style="text-align: justify;">Implementing playability of the tracks. Should be easy with all the MTP knowledge right next to me in form of Philipp.</li></ul><div style="text-align: justify;">You can view and test my code by checking out <a href="http://quickgit.kde.org/?p=clones%2Famarok%2Flaitl%2Famarok.git&amp;a=shortlog&amp;h=gsoc">gsoc branch of my personal Amarok clone repository</a>.</div><br />
+Let's repeat it,<br />
+<div class="separator" style="clear: both; text-align: center;"><a href="http://people.ubuntu.com/~jr/akademy/akademy-2013.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="/images/2013-07-17-amarok-mtp-android-gsoc-week-4-hello-akademy-2013.png" /></a></div><div style="text-align: justify;">I'm here till Friday, <b>ping strohel on #amarok or #akademy if you want to talk about anything Amarok-related</b> with me in person.</div>

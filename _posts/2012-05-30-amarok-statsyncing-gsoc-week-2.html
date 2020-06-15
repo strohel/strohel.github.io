@@ -1,0 +1,23 @@
+---
+layout: post
+title: 'Amarok StatSyncing GSoC: week 2'
+date: '2012-05-30T01:04:00.000+02:00'
+author: strohel
+tags:
+- amarok
+- gsoc
+- kde
+modified_time: '2012-06-11T12:54:11.571+02:00'
+thumbnail: http://4.bp.blogspot.com/-1BhjqsqvUUk/T8VPYrzzwVI/AAAAAAAAAF0/wIKSBuct7v8/s72-c/amarok-gsoc-week2.png
+blogger_id: tag:blogger.com,1999:blog-4406477566892767740.post-4310778430957722909
+blogger_orig_url: https://strohel.blogspot.com/2012/05/amarok-statsyncing-gsoc-week-2.html
+---
+
+Hi, in case you forgot, I'm working on <a href="http://www.google-melange.com/gsoc/project/google/gsoc2012/strohel/15001">my GSoC project about statictics synchronization in Amarok</a>. This is my second weekly report which comes a bit earlier because I'll be travelling to Budapest till the end of the week, but check the diffs, I've already done a week's worth of work. (or more :-)<br />
+<br />
+
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-1BhjqsqvUUk/T8VPYrzzwVI/AAAAAAAAAF0/wIKSBuct7v8/s1600/amarok-gsoc-week2.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="371" src="/images/2012-05-30-amarok-statsyncing-gsoc-week-2-amarok-gsoc-week2.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">UI showing how tracks from 3 collections are matched. Unique &amp; Excluded tracks work, too.</td></tr></tbody></table><br />
+<b>What I've done this week:</b> <br />
+<ul><li>Visible feedback for the job that matches tracks (little progress bar).</li><li>Renaming of core classes to have shorter names; all are in a namespace so no clash threats.</li><li>A class to handle one synchronization from start to finish (names Process).</li><li>2 models (<a href="http://qt-project.org/doc/qt-4.8/QAbstractItemModel.html">QAbstractItemModel</a> subclasses) for matched and for single tracks to power the UI + helper model to share code between them.</li><li>Rudimentary UI for showing matched and single tracks as shown on the screenshot.</li><li>A bunch of smaller fixes to keep the code clean and maintainable.</li></ul><b>Problems I've faced:</b> <br />
+<ul><li><a href="http://qt-project.org/doc/qt-4.8/QStyledItemDelegate.html">QStyledItemDelegate</a> cannot display rich text. :'-( :'-( </li><li><a href="http://qt-project.org/doc/qt-4.8/QHeaderView.html">QHeaderView</a> cannot have minimum widths per each column. :-( </li><li>Keyboard navigation doesn't work in <a href="http://qt-project.org/doc/qt-4.8/qtreeview.html">QTreeView</a> once you set selectionMode to NoSelection.</li></ul><b>What's next:</b> <br />
+<ul><li>Performing the actual synchronization. Shouldn't be hard as everything is prepared by now.</li></ul>You can test my work by pulling and <a href="http://blogs.fsfe.org/myriam/archives/87">building</a> <a href="http://quickgit.kde.org/index.php?p=clones%2Famarok%2Flaitl%2Famarok.git&amp;a=shortlog&amp;h=refs/heads/gsoc">gsoc branch</a> of <a href="http://quickgit.kde.org/?p=clones%2Famarok%2Flaitl%2Famarok.git&amp;a=summary">my Amarok git repository clone</a>, it already works (somehow)! I also publish weekly diffs with more technical details on KDE's review board which may be a more convenient way to review my code and to comment on it: <a href="https://git.reviewboard.kde.org/r/105055/">week 1</a> <a href="https://git.reviewboard.kde.org/r/105100/">week 2</a>

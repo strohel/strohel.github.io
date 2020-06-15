@@ -1,0 +1,23 @@
+---
+layout: post
+title: 'Amarok StatSyncing GSoC: week 4'
+date: '2012-06-17T15:22:00.000+02:00'
+author: strohel
+tags:
+- amarok
+- gsoc
+- kde
+modified_time: '2012-06-17T17:26:39.246+02:00'
+thumbnail: http://4.bp.blogspot.com/-ZRPvcjEAE24/T93LczI9YzI/AAAAAAAAAGM/9rvJ2Q4EySk/s72-c/amarok-statsyncing-week4.png
+blogger_id: tag:blogger.com,1999:blog-4406477566892767740.post-8272563701759932772
+blogger_orig_url: https://strohel.blogspot.com/2012/06/amarok-statsyncing-gsoc-week-4.html
+---
+
+Hi, in case you forgot, I'm working on <a href="http://www.google-melange.com/gsoc/project/google/gsoc2012/strohel/15001">my GSoC project about statistics synchronization in Amarok</a>. This week, I've made the <i>behaviour (as opposed to the looks)</i> of the synchronization dialog perfect. Do you think I'm being too bold? Check the rest of the post. :-)<br />
+<br />
+
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;"><tbody><tr><td style="text-align: center;"><a href="http://4.bp.blogspot.com/-ZRPvcjEAE24/T93LczI9YzI/AAAAAAAAAGM/9rvJ2Q4EySk/s1600/amarok-statsyncing-week4.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" height="416" src="/images/2012-06-17-amarok-statsyncing-gsoc-week-4-amarok-statsyncing-week4.png" width="640" /></a></td></tr><tr><td class="tr-caption" style="text-align: center;">I add a couple of buttons each week, I promise I won't continue endlessly. :-)</td></tr></tbody></table><br />
+<b>What I've done this week:</b><br />
+<ul><li>Eliminated some false-positives in detection of rating conflicts (uses some heuristics, but will do)</li><li>Made "Updated Tracks" and "Tracks With Conflicts" combo-box options enabled only if there are actually some such tracks.</li><li>Made synchronization aware of iPod's recent play count feature - now the synchronized value is correct even if you play the same song in Amarok and on iPod simultaneously.</li><li>Added status bar so that you know the counts.</li><li>Qt's tree view combined with filtering can unfortunately forget which nodes are expanded. I've worked it around with some witty code. :-) On first show, tracks with conflicts have their nodes expanded.</li><li>Added the "Take Ratings From" button.</li></ul><b>Problems I've faced:</b><br />
+<ul><li>While I'm generally satisfied with the dialog's behaviour, its appearance isn't particularly pleasing. I will for sure fix minor things like displaying rating with stars, but I'm not a usability expert. <a href="http://www.sharpley.org.uk/blog/improving-kde-usability-reviews">Fortunately, there seems to be an easy way to get it reviewed now.</a></li><li>To support iPods' recent play count, I've added a method to Meta::Track, which now seems rather unfortunate. I need to consult it with other Amarok developers, but probably I'll factor it into a Capability.</li></ul><b>What's next:</b><br />
+<ul><li>Next week I'll make the synchronization dialog two-step: in step 1 you choose what fields to synchronize and what collections should participate.&nbsp; What you see above will become the step 2.</li><li>I'm still a little ahead of my schedule and that's good. This means that I'll have a chance to look into Last.fm realms sooner. There is some activity on Last.fm code in Amarok from Harald Sitter recently (great!) and it turns out that rather big re-factoring will be needed.</li></ul>You can test my work by pulling and <a href="http://blogs.fsfe.org/myriam/archives/87">building</a> <a href="http://quickgit.kde.org/index.php?p=clones%2Famarok%2Flaitl%2Famarok.git&amp;a=shortlog&amp;h=refs/heads/gsoc">gsoc branch</a> of <a href="http://quickgit.kde.org/?p=clones%2Famarok%2Flaitl%2Famarok.git&amp;a=summary">my Amarok git repository clone</a>, it already works! I also publish weekly diffs with more technical details on KDE's review board which may be a more convenient way to review my code and to comment on it: <a href="https://git.reviewboard.kde.org/r/105055/">week 1</a> <a href="https://git.reviewboard.kde.org/r/105100/">week 2</a> <a href="https://git.reviewboard.kde.org/r/105219/">week 3</a> <a href="https://git.reviewboard.kde.org/r/105280/">week 4</a>

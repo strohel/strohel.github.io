@@ -1,0 +1,25 @@
+---
+layout: post
+title: 'Amarok StatSyncing GSoC: week 7 aka Where are all my statistics? And where
+  is Amarok 2.6?'
+date: '2012-07-10T19:24:00.002+02:00'
+author: strohel
+tags:
+- amarok
+- gsoc
+- kde
+modified_time: '2012-07-10T19:25:25.499+02:00'
+blogger_id: tag:blogger.com,1999:blog-4406477566892767740.post-9007806890138356719
+blogger_orig_url: https://strohel.blogspot.com/2012/07/amarok-statsyncing-gsoc-week-6-aka.html
+---
+
+Yes, I'm still working on <a href="http://www.google-melange.com/gsoc/project/google/gsoc2012/strohel/15001">my GSoC project about statistics synchronization in Amarok</a>. Past week was a bit unusual, because I've worked mainly on fixing bugs in Amarok and not directly on statistics synchronization. I think it is justifiable, because a) the bugs are about data loss which includes statistics b) they block the 2.6 release c) my GSoC timeline allows me to do so as items for week 7 are already implemented d) the data loss bugged me for long time. :-)<br />
+<br />
+
+<b>What I've done this week:</b><br />
+<ul><li>Fixed <a href="http://bugs.kde.org/show_bug.cgi?id=292245">bug 292245</a> where statistics, lyrics and labels of a song are lost if its meta-data are changed in Amarok and then it is moved. The fix is already <a href="http://quickgit.kde.org/index.php?p=amarok.git&amp;a=commit&amp;h=b108bd655d2759bd2aca6f8f7392c482684d69bb">pushed to master</a>, enjoy!</li><li>Fixed <a href="https://bugs.kde.org/show_bug.cgi?id=298275">bug 298275</a> where statistics of all tracks are lost in some cases such as toggling <i>Local Files &amp; USB Mass Storage Backend</i> in <i>Configuration -&gt; Plugins</i> (<b>don't do it!</b>). This turned out to be <a href="https://git.reviewboard.kde.org/r/105488/">rather beefy patch series</a> that currently awaits review (hi Ralf!) as it touches some delicate parts of Amarok.</li><li>Made SqlScanResultProcessor clean up the mess left by the <i>Organize Files</i> functionality (<a href="https://bugs.kde.org/show_bug.cgi?id=289338">bug 289338</a>), included in above series.</li><li>(Hopefully) made Amarok much more cautious when it comes to destructive operations in order not to lose precious data such as ratings when something goes wrong. For example, no entries are removed from the database if a serious error occurs before. Included in above series.</li></ul><b>Problems I've faced:</b><br />
+<ul><li>SqlScanResultProcessor was rather hard to understand. I spend hours just to realise <i>what's going on</i>.</li><li>Debugging collection scanner is time consuming. I've performed countless code → build → restore database → test cycles.</li></ul><b>What's next:</b><br />
+<ul><li>I'll file usability review request about GUI of statistics synchronization.</li><li>I'll move on to the second part of my project - Last.fm integration in statistics synchronization.</li></ul>Fortunately, I finally succeeded and all data loss bugs I was able to reproduce are fixed now. This means that the Amarok 2.6 is closer now because both main fixed bugs were marked as release blockers. On the other hand, 2 bugs still remain and our release guy, Bart, is time-constrained currently (fortunately he documented the whole process well).<br />
+<br />
+
+You can test my work by pulling and <a href="http://blogs.fsfe.org/myriam/archives/87">building</a> <a href="http://quickgit.kde.org/index.php?p=clones%2Famarok%2Flaitl%2Famarok.git&amp;a=shortlog&amp;h=refs/heads/gsoc">gsoc branch</a> of <a href="http://quickgit.kde.org/?p=clones%2Famarok%2Flaitl%2Famarok.git&amp;a=summary">my Amarok git repository clone</a>, it already works quite well! I also publish weekly diffs with more technical details on KDE's review board which may be a more convenient way to review my code and to comment on it: <a href="https://git.reviewboard.kde.org/r/105055/">week 1</a> <a href="https://git.reviewboard.kde.org/r/105100/">week 2</a> <a href="https://git.reviewboard.kde.org/r/105219/">week 3</a> <a href="https://git.reviewboard.kde.org/r/105280/">week 4</a> (week 5 done in →) <a href="https://git.reviewboard.kde.org/r/105409/">week 6</a> <a href="https://git.reviewboard.kde.org/r/105488/">week 7 (master bugfix)</a>
