@@ -1,12 +1,11 @@
 ---
-layout: post
-title: "How to Count All Cars in the World Using Satellites and Google Cloud: My Speech at backendisti.cz"
-author: Matěj Laitl
 tags:
 - SpaceKnow
 - Google Cloud Platform
 image: https://i3.ytimg.com/vi/kcdVDbZBAjo/maxresdefault.jpg
 ---
+
+# How to Count All Cars in the World Using Satellites and Google Cloud: My Speech at backendisti.cz
 
 Back in October 2017 I gave a talk at Czech [backendisti.cz](https://backendisti.cz/) titled
 *How to Count All Cars in the World Using Satellites and Google Cloud*.
