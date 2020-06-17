@@ -85,10 +85,21 @@ sass:
 
 # Use the following plug-ins
 plugins:
-  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
-  - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
-  - jekyll-seo-tag
+  # Default plugins hard-enabled by Google pages, keep them here so that localhost is in sync
+  # https://help.github.com/en/github/working-with-github-pages/about-github-pages-and-jekyll#plugins
+  - jekyll-coffeescript
+  - jekyll-default-layout
+  - jekyll-gist
+  - jekyll-github-metadata
+  - jekyll-optional-front-matter
   - jekyll-paginate
+  - jekyll-readme-index
+  - jekyll-relative-links
+  - jekyll-titles-from-headings
+  # Extra plugins added on top of provided by GitHub pages
+  - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
+  - jekyll-seo-tag # Add SEO tags to header for indexig and sharing on social media
+  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
 
 include: ['_pages']
 
