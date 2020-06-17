@@ -1,5 +1,5 @@
 ---
-title: "How to Count All Cars in the World Using Satellites and Google Cloud: My Speech at backendisti.cz"
+title: "How to Count All Cars in the World Using Satellites and Google Cloud: My Talk at backendisti.cz"
 tags:
 - SpaceKnow
 - Google Cloud Platform
