@@ -9,7 +9,11 @@ layout: default
         <h1>{{ post.title }}</h1>
 
         <div>
-          <p class="post_date">{{ post.date | date: "%B %e, %Y" }}</p>
+          <p class="post_date">
+            {{ post.date | date: "%B %e, %Y" }} ·
+            {% assign words = post.content | number_of_words %}
+            {% include reading-time.html %}
+          </p>
         </div>
       </a>
       <div class="entry">
