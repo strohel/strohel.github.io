@@ -395,11 +395,6 @@ nav {
   .comments {
     margin-top: 3em;
   }
-
-  .read-more {
-    text-transform: uppercase;
-    font-size: 15px;
-  }
 }
 
 .wrapper-container {
@@ -464,13 +459,13 @@ body:after {
   line-height: 1.2;
 }
 
-.author_title{
+.author_title {
   text-align: center;
   color: #939aa1;
   letter-spacing: 2px;
 }
 
-.post_date{
+.post_date {
   text-align: center;
   color: #939aa1;
 }
@@ -698,12 +693,15 @@ Modules - reusable parts of our design
 }
 
 .post-tags a {
-  font-size: 14.5px;
-  padding: 2px 13px;
+  padding: 3px 13px;
   border: none;
-  background-color: #4CAF50;
-  border-radius: 50px;
+  background-color: #b1bac2;
+  border-radius: 5px;
   color: #fff;
+}
+
+.post-tags a:hover {
+  background-color: $blue;
 }
 
 .pagination a, .pagination span {
