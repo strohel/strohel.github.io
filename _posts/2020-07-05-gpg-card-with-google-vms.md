@@ -8,7 +8,7 @@ hn: /item?id=23823480
 ---
 
 ![illustration](/images/2020-07-05-gpg-card-with-google-vms-illustration.png)
-Do you frequently SSH into Google Compute Engine VMs using `gcloud compute ssh ...`, and own a
+Do you frequently SSH into Google Compute Engine VMs using `gcloud compute ssh ...` and own a
 physical OpenPGP-compatible SmartCard/USB key? This post, also serving as a future note to myself,
 shows how to use these together for ~~fun and profit~~ convenience and security.
 
@@ -104,7 +104,7 @@ some random content into `google_compute_engine`.
    # https://unix.stackexchange.com/a/218401
    echo UPDATESTARTUPTTY | gpg-connect-agent >/dev/null
    ```
-1. Sometimes, during SSH operations like git pushes, I get `Agent refused operation` errors from
+1. Sometimes, during SSH operations like `git push`, I get `Agent refused operation` errors from
    `gpg-agent`. A re-plug and/or restart of the PC/SC Smart Card Daemon (`systemctl restart pcscd`)
    helps.
 1. For modern OpenSSH versions (8.2+ on both client and server) and security tokens (supporting
