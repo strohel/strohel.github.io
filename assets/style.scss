@@ -675,8 +675,12 @@ Modules - reusable parts of our design
   line-height: 0;
 }
 
+.comment-on {
+  color: $midGray;
+}
+
 .post-tags {
-  text-align: center;
+  color: $midGray;
   line-height: 35px;
 }
 

@@ -21,19 +21,28 @@ layout: default
     {{ content }}
   </div>
 
-  <div class="post-tags">
-    <p>
-    {% if post %}
-      {% assign tags = post.tags %}
-    {% else %}
-      {% assign tags = page.tags %}
-    {% endif %}
-    {% for tag in tags %}
-      <a href="{{site.baseurl}}/tags/#{{tag|slugize}}">{{tag}}</a>
-      {% unless forloop.last %}&nbsp;{% endunless %}
-    {% endfor %}
-    </p>
-  </div>
+  <p>
+    <div class="comment-on">
+      {% if page.urlo or page.reddit or page.hn %}
+        Comment on:&nbsp;
+        {% if page.urlo %}
+          <a href="https://users.rust-lang.org{{ page.urlo }}">Rust Language User Forum</a>,
+        {% endif %}
+        {% if page.reddit %}
+          <a href="https://www.reddit.com{{ page.reddit }}">Reddit</a>,
+        {% endif %}
+        {% if page.hn %}
+          <a href="https://news.ycombinator.com{{ page.hn }}">Hacker News</a>
+        {% endif %}
+      {% endif %}
+    </div>
 
-  {% include disqus.html %}
+    <div class="post-tags">
+      Tags:&nbsp;
+      {% for tag in page.tags %}
+        <a href="{{site.baseurl}}/tags/#{{tag|slugize}}">{{tag}}</a>
+        {% unless forloop.last %}&nbsp;{% endunless %}
+      {% endfor %}
+  </div>
+  </p>
 </article>
