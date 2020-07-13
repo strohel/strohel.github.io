@@ -24,7 +24,7 @@ html {
 body {
   background: #fff;
   font-family: -system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  color: #404040;
+  color: $darkGray;
   line-height: 1.7;
   font-weight: 400;
   font-size: 18px;
@@ -82,7 +82,6 @@ h3 {
 
 h4 {
   font-size: 18px;
-  color: #222;
 }
 
 p {
@@ -129,13 +128,6 @@ table tr td :last-child {
 	margin-bottom: 0;
 }
 
-/*.detailed .entry p:first-of-type:first-letter {
-    float: left;
-    margin: 0.13em 0.05em 0 -0.05em;
-    font-size: 3.333em;
-    line-height: 0.75em;
-}*/
-
 #search-container {
   text-align: center;
 }
@@ -150,11 +142,6 @@ table tr td :last-child {
   box-sizing: border-box;
   font-size: 18px;
   background-color: #fff3ff;
-}
-
-.share-box {
-  font-weight: bold;
-  color: #222;
 }
 
 span[data-pullquote] {
@@ -461,13 +448,14 @@ body:after {
 
 .author_title {
   text-align: center;
-  color: #939aa1;
-  letter-spacing: 2px;
+  color: $midGray;
+  letter-spacing: 1px;
 }
 
 .post_date {
   text-align: center;
-  color: #939aa1;
+  color: $midGray;
+  letter-spacing: 1px;
 }
 
 .cd-container a {
@@ -695,7 +683,7 @@ Modules - reusable parts of our design
 .post-tags a {
   padding: 3px 13px;
   border: none;
-  background-color: #b1bac2;
+  background-color: $midGray;
   border-radius: 5px;
   color: #fff;
 }
