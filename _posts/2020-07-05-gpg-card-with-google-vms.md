@@ -3,6 +3,8 @@ title: SSH into Google Compute Engine VMs with OpenPGP USB token/SmartCard
 tags:
 - Google Cloud Platform
 image: /images/2020-07-05-gpg-card-with-google-vms-illustration.png
+reddit: /r/googlecloud/comments/hqk4n4/ssh_into_google_compute_engine_vms_with_openpgp/
+hn: /item?id=23823480
 ---
 
 ![illustration](/images/2020-07-05-gpg-card-with-google-vms-illustration.png)
