@@ -17,8 +17,9 @@ shows how to use these together for ~~fun and profit~~ convenience and security.
 - Linux (Mac and maybe even Windows may use a similar trick, but I have no way to test)
 - Physical OpenPGP-compatible USB key or a SmartCard at hand.
   - For example [YubiKey](https://support.yubico.com/support/solutions/articles/15000006420-using-your-yubikey-with-openpgp),
-    [NitroKey](https://www.nitrokey.com/documentation/openpgp-create-backup), or a
-    [SmartCard](https://en.wikipedia.org/wiki/OpenPGP_card) plus a reader.
+    [NitroKey](https://www.nitrokey.com/documentation/openpgp-create-backup),
+    [Secalot](https://www.secalot.com/documentation/openpgp-smart-card/),
+    or a [SmartCard](https://en.wikipedia.org/wiki/OpenPGP_card) plus a reader.
 - The USB key/SmartCard configured (also) for SSH authentication (per links above).
   - ```bash
     $ gpg --card-status  # output should contain something similar to
