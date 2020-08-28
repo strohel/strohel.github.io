@@ -17,7 +17,8 @@ layout: default
         </div>
       </a>
       <div class="entry">
-        {{ post.excerpt }}
+        {% capture replacement %}<a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read more</a></p>{% endcapture %}
+        {{ post.excerpt | replace: "</p>", replacement }}
       </div>
 
       <div class="post-tags">
