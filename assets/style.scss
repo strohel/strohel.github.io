@@ -358,6 +358,11 @@ nav {
   border-bottom: none;
 }
 
+// Hide footnotes from excerpts on the index page
+.posts > .post > .entry sup, .posts > .post > .entry > .footnotes {
+    display: none;
+}
+
 .post {
   blockquote {
     margin: 1.8em .8em;
