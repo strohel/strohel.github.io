@@ -9,7 +9,7 @@ layout: default
     <p class="author_title">
       {{site.author}} ·
       {{ page.date | date: "%B %e, %Y" }} ·
-      {% assign words = content | number_of_words %}
+      {% assign words = content | strip_html | number_of_words %}
       {% include reading-time.html %}
     </p>
     {% if page.last_modified_at %}
