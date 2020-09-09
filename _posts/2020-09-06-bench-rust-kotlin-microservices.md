@@ -1,5 +1,5 @@
 ---
-title: What I Learnt from Benchmarking Http4k, Ktor (Kotlin) and Actix (Rust) Microservices
+title: What I Learnt from Benchmarking Http4k, Ktor (Kotlin) and Actix v2, v3 (Rust) Microservices
 tags:
 - Google Cloud Platform
 #- Elasticsearch
@@ -22,7 +22,7 @@ While **Kotlin** was the main language,
 I saw this as an opportunity to have some fun at home and test (my proficiency with) **Rust**,
 which is touted for being fast.
 I ended up stress-testing Kotlin's [**Http4k**][http4k], [**Ktor**][ktor],
-and Rust's [**Actix**][actix], read on to see how they fared.
+and Rust's [**Actix** Web][actix], read on to see how they fared.
 
 [goout]: https://goout.net/
 [http4k]: https://www.http4k.org/
@@ -149,7 +149,7 @@ located in the same zone.
 
 3. `locations-rs`: [code on GitHub](https://github.com/strohel/locations-rs/tree/rs-actix).
    - lang: **Rust** v1.45.2
-   - framework: [**Actix** web][actix] v2.0
+   - framework: [**Actix** Web][actix] v2.0 (later we find v3.0 performs equally)
    - programming model: **async** (Rust *async/await* with [Tokio][tokio] runtime v0.2.22 through `actix-rt`)
 
 [tokio]: https://tokio.rs/
@@ -225,12 +225,22 @@ thus qualified as Ktor's engine of choice for the main benchmark.
 
 I wrote the Rust clone in my free time, closely following the development of `locations-kt-http4k`.
 
+As [Actix Web 3.0 was *just* released](https://www.reddit.com/r/rust/comments/iqq8k9/announcing_actixweb_v30/)
+and I was eager to compare how it fares against v2.0 performance-wise.
+[**The one-to-one benchmark shows v3.0 is at least on par with v2.0**](https://storage.googleapis.com/strohel-pub/bench-actix-versions/bench-results.html).
+I think that's good news given that v3.0 has advanced on the safety front.
+Note that I had to [remove Swagger support](https://github.com/strohel/locations-rs/commits/rs-actix3-skylake)
+as [paperclip](https://github.com/wafflespeanut/paperclip) is not yet ported to Actix 3.0,
+but that should have no runtime effect.
+The rest of this article uses the original actix-web 2.0 version,
+but we know the conclusions apply equally well to the newest v3.0.
+
 The benchmarked build employs
 [cheap performance tricks](https://deterministic.space/high-performance-rust.html).
 Do they make a difference?
 Yes they do, the [**dedicated Rust optimizations benchmark page**](https://storage.googleapis.com/strohel-pub/bench-rust-optimizations/bench-results.html) shows that:
 1. Putting `lto = "fat"`, `codegen-units = 1` into `[profile.release]` section of `Cargo.toml`
-   **increases performance by ~14%** over a plain release build (labelled `rs-actix-base-*`).
+   **increases performance by ~17%** and efficiency by ~19% over a plain release build (labelled `rs-actix-base-*`).
 2. Adding `RUSTFLAGS="-C target-cpu=skylake"`
    or `RUSTFLAGS="-C target-cpu=znver2"`[^znver2] on top didn't affect the results.
    It may be that this workload does not benefit from any SIMD instructions beyond base x86-64 ones
