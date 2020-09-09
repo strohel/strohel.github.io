@@ -1,36 +1,33 @@
 ---
-title: Benchmarking Kotlin (Http4k, Ktor) and Rust (Actix) Microservices
+title: What I Learnt from Benchmarking Http4k, Ktor (Kotlin) and Actix (Rust) Microservices
 tags:
 - Google Cloud Platform
 #- Elasticsearch
 #- Rust
-#image: /images/2020-09-06-bench-rust-kotlin-microservices/TODO
+image: /images/2020-09-06-bench-rust-kotlin-microservices/cover.png
 #urlo: TODO
 #reddit: TODO
 #hn: TODO
 ---
 
-We were looking for a next microservice framework to power our future lightweight web
-services[^framework] back in spring 2020 at [GoOut][goout].
+![illustration](/images/2020-09-06-bench-rust-kotlin-microservices/cover.png)
+Back in spring 2020 at [GoOut][goout],
+we were looking to replace our [Spring](https://spring.io/projects/spring-framework)-[Tomcat](https://tomcat.apache.org/)
+duo by a more lightweight framework to power our future Kotlin microservices.
 We did some detailed (and sometimes philosophical) theoretical comparisons that I much enjoyed,
 but these cannot substitute a hands-on experience.
 We decided to implement proof-of-concept microservices using the most viable frameworks,
 stressing them in a benchmark along the way.
-The main language was fixed to **Kotlin**, which the team had been happy with.
-But I saw this as an opportunity to have some fun at home and test (my proficiency with) **Rust**,
-which is touted for high performance.
-I ended up stress-testing Kotlin's [**Http4k**][http4k], [**Ktor**][ktor][^vertx],
+While **Kotlin** was the main language,
+I saw this as an opportunity to have some fun at home and test (my proficiency with) **Rust**,
+which is touted for being fast.
+I ended up stress-testing Kotlin's [**Http4k**][http4k], [**Ktor**][ktor],
 and Rust's [**Actix**][actix], read on to see how they fared.
 
 [goout]: https://goout.net/
 [http4k]: https://www.http4k.org/
 [ktor]: https://ktor.io/
 [actix]: https://actix.rs/
-
-[^framework]: The past web services were Kotlin Spring-based servlets running in Tomcat.
-[^vertx]: We also implemented a Kotlin proof-of-concept in [Vert.x](https://vertx.io/),
-    but it turned out none of the team members was keen on the programming paradigm this framework
-    imposed (which may be a subjective matter), so we hadn't proceeded further with it.
 
 *Feel free to [jump to the results](#the-results) and read the background later, if you're impatient.*
 
@@ -68,25 +65,23 @@ and render response JSON.
 It uses internal in-memory cache for regions (there is just tens of them),
 but no cache for much more numerous cities.
 
-When fetching documents from Elasticsearch,
-all implementations instruct it to strip (at least) the largest property `geometry`.[^strip]
-I believe this significantly strains Elasticsearch
+To reduce bandwidth when fetching documents from Elasticsearch,
+all implementations instruct it to strip (at least) the largest property `geometry`.
+This property is only used in Elasticsearch-side filtering, not by the microservice.
+I believe the stripping significantly strains Elasticsearch
 (or rather transfers the strain from the microservice to it).
-
-[^strip]: To significantly reduce required bandwidth between microservice and Elasticsearch.
-    This property is only used in Elasticsearch-side filtering, not by the microservice.
 
 ## The Benchmark
 
 ### Recipe
 
-The benchmark consists of multiple identical "runs" for each Dockerised implementation,
-see [bench-3-impls.py](https://github.com/strohel/locations-rs/blob/master/bench-3-impls.py).
+The benchmark consists of multiple identical "runs" for each Dockerised implementation spawned
+by [bench-3-impls.py](https://github.com/strohel/locations-rs/blob/master/bench-3-impls.py).
 The runs are named after the implementation and their ordinal number,
 thus `rs-actix-1` is the first run of the Rust (Actix) implementation,
 and `kt-ktor-3` is the third run of Kotlin (Ktor) implementation.
 
-Each run simulates the first couple of minutes of the microservice instance, see [test-image.py](https://github.com/strohel/locations-rs/blob/master/test-image.py).
+Each run simulates the first couple of minutes of the microservice instance using [test-image.py](https://github.com/strohel/locations-rs/blob/master/test-image.py).
 Steps of one run:
 1. Docker container is started, measuring the time until the service starts responding,
 2. a suite of HTTP checks is made ensuring correct responses and error handling behaviour,
@@ -100,50 +95,45 @@ Steps of one run:
 [^conn-count]: The top-end concurrent connection counts of 1024 and 2048 are too high to be practical.
     They are included to test framework behaviour under uncontrolled traffic spike.
 
-Finally, all runs are plotted using awesome [Pygal](http://www.pygal.org/) library,
-see [render-tests.py](https://github.com/strohel/locations-rs/blob/master/render-tests.py).
+Finally, all runs are plotted using the awesome [Pygal](http://www.pygal.org/) library
+in [render-tests.py](https://github.com/strohel/locations-rs/blob/master/render-tests.py).
 Different runs of a single implementation use the same colour,
 allowing for visual inspection of the variance between them.
 
 ### Runtime Environment
 
 Docker is told to constrain resources available to the microservice containers,
-as in a typical Kubernetes cluster.
-The CPU is limited to 1.5 CPU-units using an equivalent of the `--cpus=1.5` Docker option.[^cpu]
+a practice usual in typical Kubernetes clusters.
+
+The CPU is limited to 1.5 CPU-units using an equivalent of the `--cpus=1.5` Docker option.
 This means that even though the instance has access to all 4 CPU cores of the machine,
 it can use only 15 CPU-seconds (out of theoretical 40 CPU-seconds) in each 10-wall-clock-second step.
-Memory is limited to 512 MiB.[^mem]
+The value of 1.5 was chosen small enough to ensure the tested microservice is the actual bottle-neck during the benchmark,
+and large enough to assert frameworks make proper use of multiple CPU cores.
+
+Memory is limited to 512 MiB. I argue that anything beyond 512 MiB should not be called a *micro*service.
 
 The two JVM-hosted Kotlin implementations run in OpenJDK 11,
 with `-XX:MaxRAMPercentage=75` as the sole option.
 It should allow JVM to allocate up to 75% of available 512 MiB memory to Java heap.
-
-[^cpu]: The value of 1.5 was chosen
-    small enough to ensure the tested microservice is the actual bottle-neck during the benchmark,
-    and large enough to assert frameworks make proper use of multiple CPU cores.
-
-[^mem]: I argue that anything beyond 512 MiB should not be called a *micro*service.
 
 ### Hardware
 
 The benchmarks run on 2 Virtual Machines in Google Cloud Platform (GCP) Compute Engine
 located in the same zone.
 
-- 1st VM, `n2d-highcpu-4` machine type (4 AMD Epyc *Rome* vCPUs, 4 GB memory):[^epyc]
+- 1st VM, `n2d-highcpu-4` machine type (4 AMD Epyc *Rome* vCPUs, 4 GB memory):
   - Runs the benchmarked microservice in a Docker container *and* the `wrk` load generator.
   - As the container is limited to 1.5 CPU and `wrk` takes less than leftover 2.5 CPUs,
     they should not affect each other.
   - Indeed, the maximum CPU utilisation during short peaks never exceeded 70%.
-
-[^epyc]: This [machine type is said to have the best performance/cost ratio on GCP and even across cloud providers](https://www.quortex.io/post/an-open-source-framework-to-benchmark-cloud-providers-performances-for-live-streaming).
+  - The N2D [machine type is said to have the best performance/cost ratio on GCP and even across cloud providers](https://www.quortex.io/post/an-open-source-framework-to-benchmark-cloud-providers-performances-for-live-streaming).
 
 - 2nd VM, `e2-custom` machine type
   (12 [high-density vCPUs](https://cloud.google.com/blog/products/compute/understanding-dynamic-resource-management-in-e2-vms), 6 GB memory):
   - Runs a stock Dockerised Elasticsearch 7.8.0 instance, storage backend for the microservices.
-  - Maximum CPU utilisation during short peaks never exceeded 80%.[^scale]
-
-[^scale]: I have scaled the number of Elasticsearch CPU cores up until it ceased to be a bottleneck,
-    arriving at 12.
+  - Maximum CPU utilisation during short peaks never exceeded 80% ---
+    I have scaled the number of Elasticsearch CPU cores up until it ceased to be a bottleneck, arriving at 12.
 
 ## The Contenders
 
@@ -165,7 +155,11 @@ located in the same zone.
 [tokio]: https://tokio.rs/
 
 [^http4k-perf]: A newer http4k version 3.258.0 with Undertow 2.1.3 very slightly regressed in
-    performance, see http4k server engine benchmarks.
+    performance, see [http4k server engine benchmarks][http4k-bench].
+
+We also initially implemented a Kotlin proof-of-concept in [Vert.x](https://vertx.io/),
+but it turned out none of the team members was keen on the programming paradigm this framework suggested
+(which may be a subjective matter), so we hadn't proceeded further with it.
 
 ### The Story of `locations-kt-http4k`
 
@@ -173,13 +167,15 @@ Http4k Locations service was written by [@**goodhoko**][goodhoko] at [GoOut][goo
 It became the production implementation at GoOut
 and is thus most complete along with extras like Swagger serving.
 
-[goodhoko]: https://github.com/goodhoko
+[goodhoko]: https://buhvi.co/
 
 Http4k [allows one to select from several server backends](https://www.http4k.org/guide/modules/servers/),
 so we first need to do a qualification benchmark and select the best performing engine to be fair.
 
-See [**Kttp4k server engine results on a dedicated page**](https://storage.googleapis.com/strohel-pub/bench-http4k-server-engines-pub/bench-results.html).
+See [**Kttp4k server engine results on a dedicated page**][http4k-bench].
 Line labels on the graph correspond to [tags in the locations-kt-http4k repository](https://gitlab.com/gooutopensource/locations-kt-http4k/-/tags).
+
+[http4k-bench]: https://storage.googleapis.com/strohel-pub/bench-http4k-server-engines-pub/bench-results.html
 
 One nice side-effect of this benchmarking was that
 I have [discovered a cause](https://github.com/http4k/http4k/issues/141#issuecomment-679330954)
@@ -300,7 +296,7 @@ In the Java world, [technologies like GraalVM may overcome the JVM limitation](h
 
 Errors should be recorded in any benchmark, so here we go.
 All frameworks behave exemplarily in our case,
-giving clean zero errors till 512 connections,
+giving pure zero errors till 512 connections,
 negligible errors for 1024 parallel connections,
 and around 3% (Kotlin) or 1% (Rust) error ratio for 2048 parallel connections.
 
@@ -325,7 +321,8 @@ Let's look at the results from left to right, as instance lifetime progresses.
   This effect is more pronounced and happens earlier in the Ktor case.
 - The behaviour of Http4k in extreme connection counts is *opposite*,
   reaching its peak *successful* req/s of ~3500, despite the presence of non-zero error ratio.
-  - I am unable to reasonably explain this behaviour.
+  This stems from both increased efficiency and, to a lesser extent, exceeding Docker CPU limits.
+  More on these below.
 
 Coincidence or not,
 Actix & Ktor that share somewhat similar shapes in the graph are both based on async executors and low thread counts,
@@ -366,7 +363,7 @@ because the base memory footprint of each framework is spread out across fewer r
 
 You may notice a slight difference in shape between Http4k and the 2 async frameworks:
 Http4k gets down to ~0.05 MiB⋅s and stays there, while the others go up again as latencies increase.
-If you have an explanation for this, please share it in a discussion.
+Caused by the async programming model or not? Share your thoughts in the discussion.
 
 <embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/cpu.svg" />
 
@@ -382,21 +379,33 @@ a remarkably small amount of resources.[^jit]
 
 Still, this is something to keep in mind about JVM-based microservices
 when considering, for example, high-frequency continuous deployment or aggressive instance count autoscaling.
-The JIT may compete for resources with the not-yet-optimised target workload.
+The JIT may also compete for resources with the not-yet-optimised target workload.
 Such characteristic should also apply to other JIT-based engines like Node.js' V8.
 
-Further right in the graph, Kotlin implementations quickly saturate the allocated CPU portion,
+Once we get to 2 connections and beyond, Kotlin implementations quickly saturate the allocated CPU portion,
 Rust following ~2 steps later.
 
-I'm curious that Http4k manages to consume a bit more CPU than the 15 CPU-seconds assigned by Docker.
+Further right, Http4k manages to consume a bit more CPU than the 15 CPU-seconds assigned by Docker.
+That may contribute to its increase of requests per second in that region,
+but the ~3.5% CPU limit surpass alone does not fully explain a ~6% boost in performance.
 
 <embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/cpu_per_request.svg" />
 
-Consumed CPU time divided by successful requests per second.
+Consumed CPU time divided by the number of successful requests per second, or *CPU efficiency*.
+Let's divide the graph into two halves.
 
-I'm not sure how to explain the improving efficiency of Rust (Actix) with the increasing number of concurrent connections.
-Some constant background work, that is however not happening when idle?
-Improved efficiency of a batch I/O?
+In the *first half* that spans from 1 to roughly 32 concurrent connections:
+- The Efficiency of Http4k, Ktor increases rapidly due to JIT
+  and because bookkeeping jobs like garbage collection get diluted between more performed requests.
+- It is hard for me to explain the efficiency growth of Actix.
+  Is there some constant overhead of the async task executor?
+  When idle, Actix consumes zero CPU cycles.
+
+In the *second half* ranging from 32 to 2048 connections:
+- Http4k's efficiency *increases* slightly, which is all but expected in the overdose of connections.
+- Ktor behaves as anticipated, showing reduction of efficiency.
+- The very subtle efficiency decrease of Actix is responsible for the drop of ~1000 requests per second
+  due to their inverse relationship.
 
 <embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/cpu_vs_requests.svg" />
 
@@ -444,5 +453,6 @@ which is just one of many aspects of each technology.
 Comparing developer experience would be material for a whole new write-up!
 
 I want to thank [GoOut][goout] for open-sourcing the 2 Kotlin implementations.
-Thanks go also to my former colleagues there for nudging me to write this up.
+Thanks go also to my former colleagues there for nudging me to write this up
+and for thoroughly reviewing a draft of this post.
 All questions, corrections, thoughts are of course welcome in any of the discussion channels linked below.
