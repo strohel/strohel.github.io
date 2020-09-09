@@ -4,13 +4,13 @@ tags:
 - Google Cloud Platform
 #- Elasticsearch
 #- Rust
-image: /images/2020-09-06-bench-rust-kotlin-microservices/cover.png
+image: /images/2020-09-13-bench-rust-kotlin-microservices/cover.png
 #urlo: TODO
 #reddit: TODO
 #hn: TODO
 ---
 
-![illustration](/images/2020-09-06-bench-rust-kotlin-microservices/cover.png)
+![illustration](/images/2020-09-13-bench-rust-kotlin-microservices/cover.png)
 Back in spring 2020 at [GoOut][goout],
 we were looking to replace our [Spring](https://spring.io/projects/spring-framework)-[Tomcat](https://tomcat.apache.org/)
 duo by a more lightweight framework to power our future Kotlin microservices.
@@ -281,7 +281,7 @@ Luckily enough, [porting to Actix involved mainly just redoing the said error ha
 All graphs below are interactive infinitely scalable SVGs.
 If you're a Firefox user, you can `Open Frame in New Tab` (available in the context menu) to see them in full.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/startup_time.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/startup_time.svg" />
 
 The startup time is measured from the moment Docker finishes setting up the container
 to the moment when we receive a valid HTTP response to `GET /`.
@@ -299,7 +299,7 @@ and may start them only after receiving a request.
 
 In the Java world, [technologies like GraalVM may overcome the JVM limitation](https://medium.com/graalvm/lightweight-cloud-native-java-applications-35d56bc45673) eventually.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/errors_vs_connections.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/errors_vs_connections.svg" />
 
 Errors should be recorded in any benchmark, so here we go.
 All frameworks behave exemplarily in our case,
@@ -307,7 +307,7 @@ giving pure zero errors till 512 connections,
 negligible errors for 1024 parallel connections,
 and around 3% (Kotlin) or 1% (Rust) error ratio for 2048 parallel connections.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/requests_vs_connections.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/requests_vs_connections.svg" />
 
 High-water mark *successful* requests per second as the number of concurrent connections grows, one of our main metrics.
 Let's look at the results from left to right, as instance lifetime progresses.
@@ -338,11 +338,11 @@ while Http4k with slightly different pattern uses more conventional high thread 
 Note that Google Cloud Run's default (and maximum) concurrent connection count of 80
 almost exactly hits the sweet spot of all measured implementations.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/latency_vs_connections_50.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/latency_vs_connections_50.svg" />
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/latency_vs_connections_90.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/latency_vs_connections_90.svg" />
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/latency_vs_connections_99.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/latency_vs_connections_99.svg" />
 
 As expected, the latency story is an inverse of throughput,
 with 99th percentile being noisiest and showing anomalies in some Rust runs.
@@ -352,7 +352,7 @@ saturate available CPU, but Rust does not, yet.
 The latency "cutoff" at the very right of the graph corresponds with the change of mode:
 from saturation-induced latency to appearance of error responses.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/max_mem_usage.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/max_mem_usage.svg" />
 
 Here we measure high-water mark memory usage of the container from its start till the end of each
 benchmark step, as reported by Docker (i.e. not just momentary memory usage).
@@ -360,7 +360,7 @@ benchmark step, as reported by Docker (i.e. not just momentary memory usage).
 The comparison between JVM-based and Rust frameworks is not representative here
 as allocated Java heap depends on configuration in addition to actual usage.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/max_mem_usage_per_requests.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/max_mem_usage_per_requests.svg" />
 
 The same metric as above, but divided by the number of successful requests per second;
 which gives an unconventional unit of *megabyte-seconds per request*.
@@ -374,7 +374,7 @@ while Ktor and [especially Actix](https://storage.googleapis.com/strohel-pub/ben
 go up again as latencies increase.
 Caused by the async programming model or not? Share your thoughts in the discussion.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/cpu.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/cpu.svg" />
 
 Consumed CPU time as reported by Docker API.
 
@@ -398,7 +398,7 @@ Further right, Http4k manages to consume a bit more CPU than the 15 CPU-seconds 
 That may contribute to its increase of requests per second in that region,
 but the ~3.5% CPU limit surpass alone does not fully explain a ~6% boost in performance.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/cpu_per_request.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/cpu_per_request.svg" />
 
 Consumed CPU time divided by the number of successful requests per second, or *CPU efficiency*.
 Let's divide the graph into two halves.
@@ -417,7 +417,7 @@ In the *second half* ranging from 32 to 2048 connections:
 - The very subtle efficiency decrease of Actix is responsible for the drop of ~1000 requests per second
   due to their inverse relationship.
 
-<embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/cpu_vs_requests.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/cpu_vs_requests.svg" />
 
 My favourite metric at the very end;
 the running total of successfully served requests (time-integrated throughput)
@@ -434,10 +434,10 @@ If we allow ourselves a blatant simplification,
 we can transform the number to more comprehensible cost per billion requests,
 assuming an example price $0.0275 per vCPU⋅hour and unrealistic perfect resource utilization.
 
-|                           | Http4k      | Ktor        | Actix       |
-| ------------------------- | ----------: | ----------: | ----------: |
-| CPU time per request      | 560&nbsp;µs | 460&nbsp;µs | 170&nbsp;µs |
-| Cost per billion requests |        $4.3 |        $3.5 |        $1.3 |
+|                           | Http4k | Ktor   | Actix  |
+| ------------------------- | -----: | -----: | -----: |
+| CPU time per request      | 560 µs | 460 µs | 170 µs |
+| Cost per billion requests |   $4.3 |   $3.5 |   $1.3 |
 
 Please take these numbers with a grain of salt.
 Because benchmarked instances run only for a couple of minutes,
