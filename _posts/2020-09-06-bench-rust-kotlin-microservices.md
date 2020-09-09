@@ -14,7 +14,7 @@ image: /images/2020-09-06-bench-rust-kotlin-microservices/cover.png
 Back in spring 2020 at [GoOut][goout],
 we were looking to replace our [Spring](https://spring.io/projects/spring-framework)-[Tomcat](https://tomcat.apache.org/)
 duo by a more lightweight framework to power our future Kotlin microservices.
-We did some detailed (and sometimes philosophical) theoretical comparisons that I much enjoyed,
+We did some detailed (at times philosophical) theoretical comparisons that I much enjoyed,
 but these cannot substitute a hands-on experience.
 We decided to implement proof-of-concept microservices using the most viable frameworks,
 stressing them in a benchmark along the way.
@@ -226,19 +226,16 @@ thus qualified as Ktor's engine of choice for the main benchmark.
 I wrote the Rust clone in my free time, closely following the development of `locations-kt-http4k`.
 
 The benchmarked build employs
-[cheap performance tricks](https://deterministic.space/high-performance-rust.html), i.e.:
-1. putting `lto = "fat"`, `codegen-units = 1` into `[profile.release]` section of `Cargo.toml`, and
-2. compiling with `RUSTFLAGS="-C target-cpu=skylake"` environment variable.
-
-Do they cause any good?
-The [**dedicated Rust optimizations benchmark page**](https://storage.googleapis.com/strohel-pub/bench-rust-optimizations/bench-results.html) shows that:
-1. Tweaking the release profile (`rs-actix-profiletweaks-*`) **increases performance**
-   over a plain release build (`rs-actix-base-*`) **by ~14%**.
-2. Adding `RUSTFLAGS="-C target-cpu=skylake"` (`rs-actix-skylake-*`)
-   or `RUSTFLAGS="-C target-cpu=znver2"` (`rs-actix-znver2-*`)[^znver2] on top didn't affect the results.
+[cheap performance tricks](https://deterministic.space/high-performance-rust.html).
+Do they make a difference?
+Yes they do, the [**dedicated Rust optimizations benchmark page**](https://storage.googleapis.com/strohel-pub/bench-rust-optimizations/bench-results.html) shows that:
+1. Putting `lto = "fat"`, `codegen-units = 1` into `[profile.release]` section of `Cargo.toml`
+   **increases performance by ~14%** over a plain release build (labelled `rs-actix-base-*`).
+2. Adding `RUSTFLAGS="-C target-cpu=skylake"`
+   or `RUSTFLAGS="-C target-cpu=znver2"`[^znver2] on top didn't affect the results.
    It may be that this workload does not benefit from any SIMD instructions beyond base x86-64 ones
-   and/or they are runtime-detected and used even when not supported by target CPU
-   (as [elfx86exts](https://github.com/pkgw/elfx86exts) detects SS(S)E3, AVX(2) instructions even in the base build).
+   and/or they are runtime-detected and used even when not supported by target CPU.
+   [Elfx86exts](https://github.com/pkgw/elfx86exts) detects SS(S)E3, AVX(2) instructions even in the base build.
 
 [^znver2]: The benchmarked microservice runs on AMD Epyc *Rome* processors of the *Zen 2* microarchitecture,
     and should thus benefit from compilation with `target-cpu=znver2`.
@@ -279,14 +276,14 @@ If you're a Firefox user, you can `Open Frame in New Tab` (available in the cont
 The startup time is measured from the moment Docker finishes setting up the container
 to the moment when we receive a valid HTTP response to `GET /`.
 The services are required not to start if configured Elasticsearch server is unreachable,
-i.e. required to do an HTTP ping round-trip to it.
+i.e. required to do an HTTP round-trip to it.
 
 Both JVM-based Kotlin services start well under 3 seconds,
-which is impressive given the JVM has to load itself, service 40+ MiB fat JAR and initialise it.
+which is impressive given the JVM has to load itself, the service 40+ MiB fat JAR and perform initialisation.
 
 Actix's Rusty startup times are barely visible in the graph as they take 1--2 ms,
 basically the time it takes to HTTP-ping Elasticsearch.
-Such single-digit-millisecond startups allow for deploying on platforms like Google Cloud Run,
+Such single-digit millisecond startups allow for deploying on platforms like Google Cloud Run,
 which [aggressively scale instances down to zero](https://cloud.google.com/run/docs/about-instance-autoscaling)
 and may start them only after receiving a request.
 
@@ -322,11 +319,11 @@ Let's look at the results from left to right, as instance lifetime progresses.
 - The behaviour of Http4k in extreme connection counts is *opposite*,
   reaching its peak *successful* req/s of ~3500, despite the presence of non-zero error ratio.
   This stems from both increased efficiency and, to a lesser extent, exceeding Docker CPU limits.
-  More on these below.
+  More on these later.
 
 Coincidence or not,
 Actix & Ktor that share somewhat similar shapes in the graph are both based on async executors and low thread counts,
-while Http4k uses more conventional high thread count and blocking I/O.
+while Http4k with slightly different pattern uses more conventional high thread count and blocking I/O.
 
 Note that Google Cloud Run's default (and maximum) concurrent connection count of 80
 almost exactly hits the sweet spot of all measured implementations.
@@ -362,7 +359,9 @@ It is normal that the values for low connections counts are higher
 because the base memory footprint of each framework is spread out across fewer requests.
 
 You may notice a slight difference in shape between Http4k and the 2 async frameworks:
-Http4k gets down to ~0.05 MiB⋅s and stays there, while the others go up again as latencies increase.
+Http4k gets down to ~0.05 MiB⋅s and stays there,
+while Ktor and [especially Actix](https://storage.googleapis.com/strohel-pub/bench-rust-optimizations/bench-results.max_mem_usage_per_requests_figure.svg)
+go up again as latencies increase.
 Caused by the async programming model or not? Share your thoughts in the discussion.
 
 <embed type="image/svg+xml" src="/images/2020-09-06-bench-rust-kotlin-microservices/cpu.svg" />
@@ -382,7 +381,7 @@ when considering, for example, high-frequency continuous deployment or aggressiv
 The JIT may also compete for resources with the not-yet-optimised target workload.
 Such characteristic should also apply to other JIT-based engines like Node.js' V8.
 
-Once we get to 2 connections and beyond, Kotlin implementations quickly saturate the allocated CPU portion,
+Once we get to 2--8 connections and beyond, Kotlin implementations quickly saturate the allocated CPU portion,
 Rust following ~2 steps later.
 
 Further right, Http4k manages to consume a bit more CPU than the 15 CPU-seconds assigned by Docker.
@@ -397,7 +396,8 @@ Let's divide the graph into two halves.
 In the *first half* that spans from 1 to roughly 32 concurrent connections:
 - The Efficiency of Http4k, Ktor increases rapidly due to JIT
   and because bookkeeping jobs like garbage collection get diluted between more performed requests.
-- It is hard for me to explain the efficiency growth of Actix.
+- It is hard for me to explain the efficiency growth of Actix,
+  which is more notable in [an Actix-only graph](https://storage.googleapis.com/strohel-pub/bench-rust-optimizations/bench-results.cpu_per_request_figure.svg).
   Is there some constant overhead of the async task executor?
   When idle, Actix consumes zero CPU cycles.
 
