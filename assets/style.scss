@@ -38,7 +38,7 @@ body {
   width: 100%;
 }
 
-h1, h2, h3, h4, h5, h6, .post .footnotes::before {
+h1, h2, h3, h4, h5, h6, .footnotes::before {
   font-family: -system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color: $darkerGray;
   font-weight: bold;
@@ -76,7 +76,7 @@ h2 {
 	}
 }
 
-h3, .post .footnotes::before {
+h3, .footnotes::before {
   font-size: 20px;
 }
 
@@ -393,17 +393,16 @@ nav {
     text-transform: uppercase;
     font-size: 15px;
   }
+}
 
-  // A trick to render Footnotes "header" before actual footnotes content
-  .footnotes::before {
-    display: block;
-    content: "Footnotes";
-  }
+// A trick to render Footnotes "header" before actual footnotes content
+.footnotes::before {
+  display: block;
+  content: "Footnotes";
+}
 
-  .footnotes {
-    font-size: 85%;
-  }
-
+.footnotes {
+  font-size: 85%;
 }
 
 .wrapper-container {
