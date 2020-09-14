@@ -450,7 +450,7 @@ This effect may be only partially compensated by the fact
 that real microservices would probably run under a load much below their saturation points,
 thus taking much longer to serve an equal number of requests.
 
-[As pointed out by Devid Denton](https://gitlab.com/gooutopensource/locations-kt-http4k/-/issues/1#note_412173385),
+[As pointed out by David Denton](https://gitlab.com/gooutopensource/locations-kt-http4k/-/issues/1#note_412173385),
 the takeaway is that the cost of operating the microservice alone is incredibly low,
 and will be easily dominated by the development and other runtime costs.
 
