@@ -7,7 +7,7 @@ tags:
 image: /images/2020-09-13-bench-rust-kotlin-microservices/cover.png
 #urlo: TODO
 reddit: /r/rust/comments/is9onc/what_i_learnt_from_benchmarking_http4k_ktor/
-#hn: TODO
+hn: /item?id=24465124
 ---
 
 ![illustration](/images/2020-09-13-bench-rust-kotlin-microservices/cover.png)
