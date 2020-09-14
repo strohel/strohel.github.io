@@ -42,7 +42,8 @@ A very valid question to ask. A couple of reasons:
   one striving to be simple/idiomatic/readable,
   but finished promptly and not extensively profiled.
   On the other hand, we wanted to include production-grade API error handling
-  (correct HTTP codes and JSON error messages listing problems of individual parameters etc.).
+  (correct HTTP codes and JSON error messages listing problems of individual parameters etc.),
+  request logging, and OpenAPI (Swagger) spec generation.
 - Besides high-water req/s performance and associated latencies,
   we wanted to capture more operational characteristics like memory usage, CPU usage and efficiency,
   along the lifetime of a microservice instance.
@@ -205,7 +206,9 @@ in most metrics.
 For completeness, I have also included the **SunHttp** backend that is intended for development only,
 which the benchmarks confirm.
 
-*Update: this implementation uses a higher-level contracts API for generating OpenAPI specs, which [may have some performance impact](https://gitlab.com/gooutopensource/locations-kt-http4k/-/issues/1). I will remeasure to find out.*
+*Update: Http4k author [has pointed out that OpenAPI generation through Contracts API may incur some performance penalty](https://gitlab.com/gooutopensource/locations-kt-http4k/-/issues/1).
+[**Benchmarks confirm that removing the Contracts layer indeed increases performance**](https://storage.googleapis.com/strohel-pub/bench-http4k-contractless/bench-results.html), shifting Http4k closer to Ktor.
+Graphs below reflect the original version with Contracts (OpenAPI support).*
 
 ### The Story of `locations-kt-ktor`
 
@@ -475,5 +478,5 @@ Thanks go also to my former colleagues there for nudging me to write this up
 and for thoroughly reviewing a draft of this post.
 All questions, corrections, thoughts are of course welcome in any of the discussion channels linked below.
 
-*Updated on 2020-09-14 with some clarifications.
+*Updated on 2020-09-14 with some clarifications, and on 2020-09-16 with additional Http4k "contractless" benchmark.
 [See post history in git](https://github.com/strohel/strohel.github.io/commits/master/_posts/2020-09-13-bench-rust-kotlin-microservices.md).*
