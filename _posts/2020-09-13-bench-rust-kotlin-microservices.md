@@ -6,7 +6,7 @@ tags:
 #- Rust
 image: /images/2020-09-13-bench-rust-kotlin-microservices/cover.png
 #urlo: TODO
-#reddit: TODO
+reddit: /r/rust/comments/is9onc/what_i_learnt_from_benchmarking_http4k_ktor/
 #hn: TODO
 ---
 
