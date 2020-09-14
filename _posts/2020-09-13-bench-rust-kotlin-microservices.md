@@ -5,7 +5,7 @@ tags:
 #- Elasticsearch
 #- Rust
 image: /images/2020-09-13-bench-rust-kotlin-microservices/cover.png
-#urlo: TODO
+urlo: /t/what-i-learnt-from-benchmarking-http4k-ktor-kotlin-and-actix-v2-v3-rust-microservices/48750
 reddit: /r/rust/comments/is9onc/what_i_learnt_from_benchmarking_http4k_ktor/
 hn: /item?id=24465124
 ---
