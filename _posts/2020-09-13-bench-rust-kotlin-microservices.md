@@ -205,6 +205,8 @@ in most metrics.
 For completeness, I have also included the **SunHttp** backend that is intended for development only,
 which the benchmarks confirm.
 
+*Update: this implementation uses a higher-level contracts API for generating OpenAPI specs, which [may have some performance impact](https://gitlab.com/gooutopensource/locations-kt-http4k/-/issues/1). I will remeasure to find out.*
+
 ### The Story of `locations-kt-ktor`
 
 Ktor variant was also written by [@**goodhoko**][goodhoko] at [GoOut][goout],
@@ -344,6 +346,8 @@ almost exactly hits the sweet spot of all measured implementations.
 
 <embed type="image/svg+xml" src="/images/2020-09-13-bench-rust-kotlin-microservices/latency_vs_connections_99.svg" />
 
+50th, 90th and 99th percentile latencies plotted using a *logarithmic scale*.
+
 As expected, the latency story is an inverse of throughput,
 with 99th percentile being noisiest and showing anomalies in some Rust runs.
 The biggest (geometric) difference is in the 8--16 connections range where Kotlin frameworks already
@@ -446,6 +450,10 @@ This effect may be only partially compensated by the fact
 that real microservices would probably run under a load much below their saturation points,
 thus taking much longer to serve an equal number of requests.
 
+[As pointed out by Devid Denton](https://gitlab.com/gooutopensource/locations-kt-http4k/-/issues/1#note_412173385),
+the takeaway is that the cost of operating the microservice alone is incredibly low,
+and will be easily dominated by the development and other runtime costs.
+
 ## Conclusion
 
 In this post, I wanted to go beyond usual benchmarks by having an extended set of metrics
@@ -466,3 +474,6 @@ I want to thank [GoOut][goout] for open-sourcing the 2 Kotlin implementations.
 Thanks go also to my former colleagues there for nudging me to write this up
 and for thoroughly reviewing a draft of this post.
 All questions, corrections, thoughts are of course welcome in any of the discussion channels linked below.
+
+*Updated on 2020-09-14 with some clarifications.
+[See post history in git](https://github.com/strohel/strohel.github.io/commits/master/_posts/2020-09-13-bench-rust-kotlin-microservices.md).*
