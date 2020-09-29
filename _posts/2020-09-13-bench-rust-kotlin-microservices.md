@@ -3,7 +3,7 @@ title: What I Learnt from Benchmarking Http4k, Ktor (Kotlin) and Actix v2, v3 (R
 tags:
 - Google Cloud Platform
 #- Elasticsearch
-#- Rust
+- Rust
 image: /images/2020-09-13-bench-rust-kotlin-microservices/cover.png
 urlo: /t/what-i-learnt-from-benchmarking-http4k-ktor-kotlin-and-actix-v2-v3-rust-microservices/48750
 reddit: /r/rust/comments/is9onc/what_i_learnt_from_benchmarking_http4k_ktor/
