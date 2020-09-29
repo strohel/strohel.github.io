@@ -5,8 +5,8 @@ tags:
 #- Elasticsearch
 - Rust
 image: /images/2020-09-27-bench-actix-rocket/cover.png
-reddit: TODO /r/rust/comments/TODO/TODO/
-hn: TODO /item?id=TODO
+#reddit: TODO /r/rust/comments/TODO/TODO/
+#hn: TODO /item?id=TODO
 ---
 
 ![illustration](/images/2020-09-27-bench-actix-rocket/cover.png)
