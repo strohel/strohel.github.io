@@ -5,8 +5,8 @@ tags:
 #- Elasticsearch
 - Rust
 image: /images/2020-09-29-bench-actix-rocket/cover.png
-#reddit: TODO /r/rust/comments/TODO/TODO/
-#hn: TODO /item?id=TODO
+reddit: /r/rust/comments/j2acxl/benchmarking_vol_2_pitting_actix_against_rocket/
+hn: /item?id=24634107
 ---
 
 ![illustration](/images/2020-09-29-bench-actix-rocket/cover.png)
