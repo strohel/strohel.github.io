@@ -11,7 +11,7 @@ image: /images/2020-09-27-bench-actix-rocket/cover.png
 
 ![illustration](/images/2020-09-27-bench-actix-rocket/cover.png)
 I present a Rust-specific sequel to my [previous benchmark of 2 Kotlin and a Rust microservice](/bench-rust-kotlin-microservices/)
---- it's hard to resist own curiosity and popular demand, especially when you've been
+--- it's hard to resist one's own curiosity and popular demand, especially when you've been
 [nerd](https://www.reddit.com/r/rust/comments/is9onc/what_i_learnt_from_benchmarking_http4k_ktor/g57n93y/?utm_source=share&utm_medium=web2x&context=3)-[sniped](https://xkcd.com/356/).
 Let's stress-test the two prominent web frameworks: Actix Web and Rocket.
 In addition to stable threads & blocking calls Rocket v0.4,
@@ -31,7 +31,7 @@ aspects that apply equally well to this round:
   *TL;DR: a simple endpoint that does one call to Elasticsearch server.*
 - [The testing methodology](/bench-rust-kotlin-microservices/#recipe).
   *TL;DR: repeated runs of a Python script that spins microservice Docker container
-  and exposes it to increasing number of concurrent connections using [wrk](https://github.com/wg/wrk).*
+  and exposes it to an increasing number of concurrent connections using [wrk](https://github.com/wg/wrk).*
 - [Runtime Environment](/bench-rust-kotlin-microservices/#runtime-environment).
   *TL;DR: we limit the microservice to 1.5 CPU cores and 512 MiB memory using Docker.*
 - [Hardware](/bench-rust-kotlin-microservices/#hardware).
@@ -42,8 +42,8 @@ More specifically, all implementations are compiled using
 `rustc 1.47.0-nightly (2d8a3b918 2020-08-26)`.[^nightly]
 
 [^nightly]: On my Gentoo development workstation,
-    I use latest official Rust release (currently 1.46.0), but [compiled as nightly](https://packages.gentoo.org/useflags/nightly).
-    This combines rigidity of a well-tested release with ability to use nightly features.
+    I use the latest official Rust release (currently 1.46.0) but [compiled as nightly](https://packages.gentoo.org/useflags/nightly).
+    This combines the rigidity of a well-tested release with the ability to use nightly features.
     I wish this existed in form of a Docker image.
 
 ## Actix v3.0
@@ -63,7 +63,7 @@ Uses stable **Rocket 0.4.5**.
 
 Porting from Actix to Rocket v0.4 was a matter of
 [one +175 -150 lines commit](https://github.com/strohel/locations-rs-rocket/commit/f37de2fe).[^lines]
-It looks a bit scary, but was actually mostly mechanical:
+It looks a bit scary but was mostly mechanical:
 converting Actix type to Rocketry ones, and then fixing all compiler errors ---
 I love how `rustc` essentially works as your to-do list.
 There was only one major hurdle:
@@ -92,8 +92,8 @@ But what if we really want to? These are our options:
    the future, and any other spawned async tasks, actually run within this Rocket worker thread.[^worker-run]
    This comes with a caveat.
    Reqwest::client() seems to *attach* itself to the async runtime it is first used in.
-   I had to make Elasticsearch client also local to each Rocket worker,
-   otherwise I got deadlocks or [problems described in hyper issue #2112](https://github.com/hyperium/hyper/issues/2112).
+   I had to make Elasticsearch client also local to each Rocket worker.
+   Otherwise, I got deadlocks or [problems described in hyper issue #2112](https://github.com/hyperium/hyper/issues/2112).
 3. `per-req-rt`: launch a fresh basic Tokio runtime per each request.
    It feels wrong, and it is wrong. I've tried and benchmarked this so that we know *how much* wrong.
 4. Patch elasticsearch-rs to provide a blocking API --- by employing Request's
@@ -109,10 +109,10 @@ But what if we really want to? These are our options:
     We don't mind.
 
 [**Here are the results of benchmarking the first three approaches.**](https://storage.googleapis.com/strohel-pub/rocket-async-approach/bench-results.html)
-Source code of each variant is available under respective [tag in the locations-rs-rocket repository](https://github.com/strohel/locations-rs-rocket/tags).
+Source code of each variant is available under the respective [tag in the locations-rs-rocket repository](https://github.com/strohel/locations-rs-rocket/tags).
 
 You can almost hear the server crying as it tries to cope with the inefficiency of `per-req-rt`:
-it it more than 7✕ less efficient than the best performing variant.
+it is more than 7✕ less efficient than the best performing variant.
 
 The other two more realistic variants are close to each other.
 `per-worker-rt` has a slight edge in peak performance and a clear edge in efficiency,
@@ -134,7 +134,7 @@ Unfortunately, Rocket v0.4 is not their friend.
 **First**, to the best of my knowledge,
 [persistent connections don't work at all in Rocket v0.4](https://github.com/SergioBenitez/Rocket/issues/580#issuecomment-698286249)
 --- the server closes the connection before reading a second request.
-I've [traced the problem down to a bug in BufReader in old hyper 0.10.x, and submitted a fix](https://github.com/hyperium/hyper/pull/2288/commits/3109103).
+I've [traced the problem down to a bug in BufReader in old hyper 0.10.x and submitted a fix](https://github.com/hyperium/hyper/pull/2288/commits/3109103).
 In the 0.11.x branch, the same bug was [fixed a long ago](https://github.com/hyperium/hyper/commit/d35992d0198d733c251e133ecc35f2bca8540d96#diff-078f367374debbc894f7cc1c4084e467R64-R66) and released with 0.11.0 in June 2017.
 My pull request was [closed without merging](https://github.com/hyperium/hyper/pull/2288#issuecomment-698492487),
 as the maintainers were (understandably) not keen on releasing a new version of a legacy branch that was superseded 3 years ago.
@@ -143,7 +143,7 @@ In other words, *Rocket v0.4 depends on unmaintained hyper* for its HTTP handlin
 **Second,** even if the bug in hyper is patched,
 keep-alive connections in hyper 0.10.x are [implemented naïvely](https://github.com/hyperium/hyper/blob/0.10.x/src/server/mod.rs#L282-L351):
 the worker thread is kept busy waiting for the client on the persistent connection,
-without ability to process other requests.
+unable to process other requests.
 It is therefore easy to (accidentally) trigger denial-of-service
 by opening more persistent connections than available workers,
 even with the default keep-alive timeout of 5 s.[^browsers]
@@ -158,7 +158,7 @@ If you run Rocket v0.4 in production,
 I recommend you to turn off persistent connections in Rocket config (set `keep-alive` to `0`)
 --- while most clients retry the failed second request on a persistent connection gracefully,
 at least some versions of Python `requests` and `urllib3` were raising exceptions instead.
-If you care about latency, I suggest you to put a HTTP load-balancer in front of Rocket v0.4 server
+If you care about latency, I suggest you put an HTTP load-balancer in front of Rocket v0.4 server
 to reintroduce persistent connections at least to the client <-> load-balancer hop.
 
 [**The benchmarks show that disabling keep-alive causes only a mild performance hit in our case.**](https://storage.googleapis.com/strohel-pub/rocket-keep-alive/bench-results.html)
@@ -170,9 +170,9 @@ It can be seen that disabling keep-alive hurts latency, but not necessarily thro
 Note that the effect will be more pronounced in reality,
 real network latencies are much more significant than that of our loopback interface.
 
-Unfortunately, `wrk` does not indicate that some its concurrent connections have failed to connect to the server at all.
-But another demonstration of the denial-of-service behaviour is present:
-Notice how the latencies of the 16-, 32-, and 64-worker instances of Rocket with keep-alive *cut-off* at
+Unfortunately, `wrk` does not indicate that some of its concurrent connections have failed to connect to the server at all.
+But another demonstration of the denial-of-service behaviour is present when keep-alive is enabled:
+Notice how the latencies of the 16-, 32-, and 64-worker instances of Rocket *cut-off* at
 16, 32, respectively 64 concurrent connections.
 When such saturation happens,
 it is indeed impossible to make a new connection using e.g. `curl` to the Rocket instance.
@@ -181,7 +181,7 @@ Because of these 2 problems, Rocket v0.4 has keep-alive disabled in all other be
 
 ### Tuning The Number of Workers
 
-If you want to squeeze highest possible efficiency from a Rocket v0.4 instance,
+If you want to squeeze the highest possible efficiency from a Rocket v0.4 instance,
 you should tweak the number of its worker threads.
 The optimal count will depend mainly on the number of available CPU cores,
 and the ratio of time your endpoints spend CPU-crunching and waiting for I/O.
@@ -238,7 +238,7 @@ Rocket v0.4 is initially, when throughput is bound by latency,
 handicapped by the lack of keep-alive support discussed above,
 but then manages to climb close to 7,000 req/s.  
 Development snapshot of Rocket v0.5 already performs better than its stable predecessor.
-Its CPU efficiency doesn't allow it to reach throughput of Actix, though.
+Its CPU efficiency doesn't allow it to reach the throughput of Actix, though.
 
 <embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/latency_vs_connections_50.svg" />
 
@@ -267,7 +267,7 @@ but the difference is that back-pressure needs to be deliberately injected there
 Rocket v0.5-dev's memory usage sky-rockets (pun intended),
 2 of its runs are out-of-memory killed when reaching 512 MiB.
 This is a development version, so don't get too worried about it.
-It could be a simple bug or some development artifact,
+It could be a simple bug or some development artefact,
 let's check it later when 0.5.0 release approaches.
 
 <embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/max_mem_usage_per_requests.svg" />
@@ -278,7 +278,7 @@ which gives an unconventional unit of *megabyte-seconds per request*.
 Actix shows it's usual "basin" shape that was not explained since the last post.
 If you have a clue, you definitely should speak up now.
 
-Constant memory of Rocket v0.4 gets diluted into increasing number of served requests.
+Constant memory of Rocket v0.4 gets diluted into the increasing number of served requests.
 
 Rocket v0.5-dev per-request memory is not decreasing even in the 2--16 connection range
 where its throughput grows exponentially
@@ -289,8 +289,8 @@ where its throughput grows exponentially
 Consumed CPU time as reported by Docker API.
 
 Actix and Rocket v0.4 show surprisingly similar pattern here.
-While Rocker v0.4 is not itself async,
-our implementation actually spawns per-thread *basic* Tokio async runtimes, as Actix does.
+While Rocket v0.4 is not itself async,
+our implementation spawns per-thread *basic* Tokio async runtimes, as Actix does.
 
 I attribute higher initial CPU consumption of Rocket v0.5-dev to its use of the threaded work-stealing Tokio runtime.
 When such runtime was used in one of the Rocket v0.4 variants, its initial CPU consumption was similarly higher.
@@ -302,7 +302,7 @@ Consumed CPU time divided by the number of successful requests per second, or *C
 Here, Actix manages to be incredibly efficient in the range of small hundreds of concurrent connections
 --- that's a recipe for achieving record peak throughputs.
 
-Synchronous Rocket v0.4 demonstrates most stable performance,
+Synchronous Rocket v0.4 demonstrates the most stable performance,
 it is least affected by the number of connections.
 
 <embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/cpu_vs_requests.svg" />
@@ -313,13 +313,13 @@ Going up means serving requests, while going right means consuming CPU.
 Line slope corresponds to CPU efficiency.
 
 Actix again shows that it is heavily optimised.
-The two Rocker versions display interestingly similar efficiency.
-Their difference is that v0.5-dev is able to serve more requests in a given wall-clock time,
+The two Rocket versions display interestingly similar efficiency.
+Their difference is that v0.5-dev is able to serve more requests in given wall-clock time,
 but it asks appropriately more CPU ticks for it.
 
 ## Conclusion
 
-The main take-away is probably that both prominent Rust web frameworks are fast enough that
+The main takeaway is probably that both prominent Rust web frameworks are fast enough that
 you can stop caring about performance, and concentrate on other aspects. The endpoint handler
 tested here is trivial: the more complex your handler is, the less framework overhead matters.
 
