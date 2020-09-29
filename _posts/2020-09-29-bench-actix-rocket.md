@@ -14,7 +14,7 @@ I present a Rust-specific sequel to my [previous benchmark of 2 Kotlin and a Rus
 --- it's hard to resist one's own curiosity and popular demand, especially when you've been
 [nerd](https://www.reddit.com/r/rust/comments/is9onc/what_i_learnt_from_benchmarking_http4k_ktor/g57n93y/?utm_source=share&utm_medium=web2x&context=3)-[sniped](https://xkcd.com/356/).
 Let's stress-test the two prominent web frameworks: Actix Web and Rocket.
-In addition to stable threads & blocking calls Rocket v0.4,
+In addition to stable "threads & blocking calls" Rocket v0.4,
 I have included a development snapshot of in-the-works Rocket v0.5,
 which is async and [no longer requires nightly Rust](https://github.com/SergioBenitez/Rocket/commit/56a61726).
 
