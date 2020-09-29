@@ -37,6 +37,7 @@ aspects that apply equally well to this round:
 - [Hardware](/bench-rust-kotlin-microservices/#hardware).
   *TL;DR: Google Cloud Platform VM with 4-core AMD Epyc Rome CPU for the microservice + 12-core machine for the Elasticsearch server.*
 
+We still compile in release mode, target `skylake`, and utilize [cheap performance tricks](https://deterministic.space/high-performance-rust.html).
 What changed is Rust version, we have to use **nightly** because of Rocket v0.4.
 More specifically, all implementations are compiled using
 `rustc 1.47.0-nightly (2d8a3b918 2020-08-26)`.[^nightly]
@@ -332,5 +333,11 @@ That should serve as a reminder to check whether your *transitive* dependencies 
 Old dependencies sometimes also bring duplicate packages into dependency tree,
 `cargo tree -d` will show them.
 And finally [lib.rs](https://lib.rs/) shows outdated dependencies in red, though not the transitive ones.
+
+This article was dedicated to operational characteristics.
+I believe that every developer should care how their product actually runs.
+But that isn't the whole story
+--- I have some developer experience notes from porting from Actix to Rocket,
+let's see whether I'll be able to distil them into a blog post.
 
 Thanks for reading, and as usual I would be glad for any comments, thoughts and remarks.
