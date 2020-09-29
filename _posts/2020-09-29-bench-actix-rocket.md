@@ -4,12 +4,12 @@ tags:
 - Google Cloud Platform
 #- Elasticsearch
 - Rust
-image: /images/2020-09-27-bench-actix-rocket/cover.png
+image: /images/2020-09-29-bench-actix-rocket/cover.png
 #reddit: TODO /r/rust/comments/TODO/TODO/
 #hn: TODO /item?id=TODO
 ---
 
-![illustration](/images/2020-09-27-bench-actix-rocket/cover.png)
+![illustration](/images/2020-09-29-bench-actix-rocket/cover.png)
 I present a Rust-specific sequel to my [previous benchmark of 2 Kotlin and a Rust microservice](/bench-rust-kotlin-microservices/)
 --- it's hard to resist one's own curiosity and popular demand, especially when you've been
 [nerd](https://www.reddit.com/r/rust/comments/is9onc/what_i_learnt_from_benchmarking_http4k_ktor/g57n93y/?utm_source=share&utm_medium=web2x&context=3)-[sniped](https://xkcd.com/356/).
@@ -215,21 +215,21 @@ I attribute this to porting to up-to-date hyper 0.13.x and async Rust ecosystem.
 
 All graphs below are interactive and infinitely scalable SVGs --- zoom in if necessary.
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/startup_time.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/startup_time.svg" />
 
 The startup time is measured from the moment Docker finishes setting up the container
 to the moment when we receive a valid HTTP response to `GET /`.
 
 No real difference, single-digit milliseconds correspond to the required round-trip to Elasticsearch server.
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/errors_vs_connections.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/errors_vs_connections.svg" />
 
 Error response ratio in percents.
 
 Nicely flat for all frameworks up to extreme 1024 and 2048 connections.
 Actix manages to be slightly better there with ~1% of errors, compared to ~1.5% of both Rocket versions.
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/requests_vs_connections.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/requests_vs_connections.svg" />
 
 High-water mark *successful* requests per second as the number of concurrent connections grows, one of our main metrics.
 
@@ -240,18 +240,18 @@ but then manages to climb close to 7,000 req/s.
 Development snapshot of Rocket v0.5 already performs better than its stable predecessor.
 Its CPU efficiency doesn't allow it to reach the throughput of Actix, though.
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/latency_vs_connections_50.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/latency_vs_connections_50.svg" />
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/latency_vs_connections_90.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/latency_vs_connections_90.svg" />
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/latency_vs_connections_99.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/latency_vs_connections_99.svg" />
 
 50th, 90th and 99th percentile latencies plotted using a *logarithmic scale*.
 
 Actix is generally the best performer also when it comes to latency.
 We see interesting ranking shifts between Rocket v0.4 and v0.5-dev between 50th, 90th, and 99th percentile.
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/max_mem_usage.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/max_mem_usage.svg" />
 
 Here we measure high-water mark memory usage of the container from its start till the end of each
 benchmark step, as reported by Docker (i.e. not just momentary memory usage).
@@ -270,7 +270,7 @@ This is a development version, so don't get too worried about it.
 It could be a simple bug or some development artefact,
 let's check it later when 0.5.0 release approaches.
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/max_mem_usage_per_requests.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/max_mem_usage_per_requests.svg" />
 
 The same metric as above, but divided by the number of successful requests per second;
 which gives an unconventional unit of *megabyte-seconds per request*.
@@ -284,7 +284,7 @@ Rocket v0.5-dev per-request memory is not decreasing even in the 2--16 connectio
 where its throughput grows exponentially
 --- a sign that the said bug could be a memory leak?
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/cpu.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/cpu.svg" />
 
 Consumed CPU time as reported by Docker API.
 
@@ -295,7 +295,7 @@ our implementation spawns per-thread *basic* Tokio async runtimes, as Actix does
 I attribute higher initial CPU consumption of Rocket v0.5-dev to its use of the threaded work-stealing Tokio runtime.
 When such runtime was used in one of the Rocket v0.4 variants, its initial CPU consumption was similarly higher.
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/cpu_per_request.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/cpu_per_request.svg" />
 
 Consumed CPU time divided by the number of successful requests per second, or *CPU efficiency*.
 
@@ -305,7 +305,7 @@ Here, Actix manages to be incredibly efficient in the range of small hundreds of
 Synchronous Rocket v0.4 demonstrates the most stable performance,
 it is least affected by the number of connections.
 
-<embed type="image/svg+xml" src="/images/2020-09-27-bench-actix-rocket/cpu_vs_requests.svg" />
+<embed type="image/svg+xml" src="/images/2020-09-29-bench-actix-rocket/cpu_vs_requests.svg" />
 
 Running total of successfully served requests (time-integrated throughput)
 over the cumulative sum of used CPU time, or *bang for the buck* for short.
