@@ -168,7 +168,7 @@ Http4k Locations service was written by [@**goodhoko**][goodhoko] at [GoOut][goo
 It became the production implementation at GoOut
 and is thus most complete along with extras like Swagger serving.
 
-[goodhoko]: https://buhvi.co/
+[goodhoko]: https://jentak.co/
 
 Http4k [allows one to select from several server backends](https://www.http4k.org/guide/modules/servers/),
 so we first need to do a qualification benchmark and select the best performing engine to be fair.
